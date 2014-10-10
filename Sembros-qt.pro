@@ -4,11 +4,38 @@ VERSION = 0.7.2
 INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE BOOST_THREAD_PROVIDES_GENERIC_SHARED_MUTEX_ON_WIN __NO_SYSTEM_INCLUDES
 CONFIG += no_include_pwd
+CONFIG += thread
+QMAKE_CXXFLAGS = -fpermissive
+QT += core gui network
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+lessThan(QT_MAJOR_VERSION, 5): CONFIG += static
 
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets
+    DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
+}
 # UNCOMMENT THIS SECTION TO BUILD ON WINDOWS
 # Change paths if needed, these use the foocoin/deps.git repository locations
 
-
+win32 {
+    windows:LIBS += -lshlwapi
+    LIBS += $$join(BOOST_LIB_PATH,,-L,) $$join(BDB_LIB_PATH,,-L,) $$join(OPENSSL_LIB_PATH,,-L,) $$join(QRENCODE_LIB_PATH,,-L,)
+    LIBS += -lssl -lcrypto -ldb_cxx$$BDB_LIB_SUFFIX
+    windows:LIBS += -lws2_32 -lole32 -loleaut32 -luuid -lgdi32
+    LIBS += -lboost_system-mgw48-mt-s-1_55 -lboost_filesystem-mgw48-mt-s-1_55 -lboost_program_options-mgw48-mt-s-1_55 -lboost_thread-mgw48-mt-s-1_55
+    BOOST_LIB_SUFFIX=-mgw48-mt-s-1_55
+    BOOST_INCLUDE_PATH=C:/deps/boost_1_55_0
+    BOOST_LIB_PATH=C:/deps/boost_1_55_0/stage/lib
+    BDB_INCLUDE_PATH=C:/deps/db-4.8.30.NC/build_unix
+    BDB_LIB_PATH=C:/deps/db-4.8.30.NC/build_unix
+    OPENSSL_INCLUDE_PATH=C:/deps/openssl-1.0.1g/include
+    OPENSSL_LIB_PATH=C:/deps/openssl-1.0.1g
+    MINIUPNPC_INCLUDE_PATH=C:/deps/
+    MINIUPNPC_LIB_PATH=C:/deps/miniupnpc
+    QRENCODE_INCLUDE_PATH=C:/deps/qrencode-3.4.3
+	QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.3/.libs
+}
 
 OBJECTS_DIR = build
 MOC_DIR = build
@@ -341,7 +368,7 @@ OTHER_FILES += \
 # platform specific defaults, if not overridden on command line
 isEmpty(BOOST_LIB_SUFFIX) {
     macx:BOOST_LIB_SUFFIX = -mt
-    windows:BOOST_LIB_SUFFIX = -mgw44-mt-s-1_50
+    
 }
 
 isEmpty(BOOST_THREAD_LIB_SUFFIX) {
@@ -396,6 +423,21 @@ macx:TARGET = "Sembros-Qt"
 macx:QMAKE_CFLAGS_THREAD += -pthread
 macx:QMAKE_LFLAGS_THREAD += -pthread
 macx:QMAKE_CXXFLAGS_THREAD += -pthread
+
+!windows:!macx {
+BOOST_INCLUDE_PATH=/opt/local/include/boost
+          BOOST_LIB_PATH=/opt/local/lib
+          BDB_INCLUDE_PATH=/opt/local/include/db48
+          BDB_LIB_PATH=/opt/local/lib/db48
+          OPENSSL_INCLUDE_PATH=/opt/local/include/openssl
+          OPENSSL_LIB_PATH=/opt/local/lib
+
+          MINIUPNPC_INCLUDE_PATH=/opt/local/include/miniupnpc
+          MINIUPNPC_LIB_PATH=/opt/local/lib
+
+          QRENCODE_INCLUDE_PATH=/opt/local/include
+          QRENCODE_LIB_PATH=/opt/local/lib
+}
 
 # Set libraries and includes at end, to use platform-defined defaults if not overridden
 INCLUDEPATH += $$BOOST_INCLUDE_PATH $$BDB_INCLUDE_PATH $$OPENSSL_INCLUDE_PATH $$QRENCODE_INCLUDE_PATH
