@@ -1,0 +1,9 @@
+Building Sembros
+
+See doc/readme-qt.rst for instructions on building Sembros QT,
+the intended-for-end-users, nice-graphical-interface, reference
+implementation of Sembros.
+
+See doc/build-*.txt for instructions on building Sembrosd,
+the intended-for-services, no-graphical-interface, reference
+implementation of Sembros.
